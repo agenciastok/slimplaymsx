@@ -1,4 +1,4 @@
-import { handleMsx } from '../../src/msx/gateway';
+import { handleMsx } from './gateway';
 
 export const config = {
   api: { bodyParser: false },
@@ -49,12 +49,12 @@ function requestUrl(request: unknown): URL {
 function header(request: unknown, name: string): string | undefined {
   if (!request || typeof request !== 'object' || !('headers' in request)) return undefined;
   const headers = request.headers;
-  if (!headers) return undefined;
-  if (typeof headers === 'object' && headers && 'get' in headers && typeof headers.get === 'function') {
+  if (!headers || typeof headers !== 'object') return undefined;
+  if ('get' in headers && typeof headers.get === 'function') {
     const value = headers.get(name);
     return typeof value === 'string' ? value : undefined;
   }
-  if (typeof headers === 'object' && headers && name in headers) {
+  if (name in headers) {
     const value = (headers as Record<string, unknown>)[name];
     if (Array.isArray(value)) return typeof value[0] === 'string' ? value[0] : undefined;
     return typeof value === 'string' ? value : undefined;
@@ -74,7 +74,8 @@ async function readJson(request: unknown): Promise<unknown> {
 
 async function readText(request: unknown): Promise<string> {
   if (request && typeof request === 'object' && 'text' in request && typeof request.text === 'function') {
-    return request.text();
+    const text = await request.text();
+    return typeof text === 'string' ? text : '';
   }
   const chunks: Uint8Array[] = [];
   if (request && typeof request === 'object' && Symbol.asyncIterator in request) {
