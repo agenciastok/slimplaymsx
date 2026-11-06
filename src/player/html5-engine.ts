@@ -1,6 +1,7 @@
 import type { HandlerRef, PlaybackEngine } from './types';
 
-/** Browser stand-in for AVPlay. MPEG-TS and HLS.js stay inside development. */
+/** Browser stand-in for AVPlay. MPEG-TS and HLS.js stay out of the Samsung package. */
+const browserEngines = import.meta.env.DEV || import.meta.env.VITE_MSX === 'true';
 export class Html5Engine implements PlaybackEngine {
   private disposed = false;
   private hls: { destroy: () => void } | null = null;
@@ -32,7 +33,7 @@ export class Html5Engine implements PlaybackEngine {
   }
 
   async open(url: string): Promise<void> {
-    if (import.meta.env.DEV && this.live && /\.ts($|\?)/i.test(url)) {
+    if (browserEngines && this.live && /\.ts($|\?)/i.test(url)) {
       const { attachTransportStream } = await import('./html5-mpegts');
       await attachTransportStream(this.video, url, {
         disposed: () => this.disposed,
@@ -51,7 +52,7 @@ export class Html5Engine implements PlaybackEngine {
     const hls = /\.m3u8($|\?)/i.test(url);
     if (hls && this.video.canPlayType('application/vnd.apple.mpegurl')) {
       this.video.src = url;
-    } else if (hls && import.meta.env.DEV) {
+    } else if (hls && browserEngines) {
       const { default: Hls } = await import('hls.js');
       if (this.disposed) return;
       if (!Hls.isSupported()) {

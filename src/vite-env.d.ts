@@ -1,5 +1,11 @@
 /// <reference types="vite/client" />
 
+declare global {
+  interface ImportMetaEnv {
+    readonly VITE_MSX?: string;
+  }
+}
+
 declare module 'qrcode' {
   interface QrOptions {
     margin?: number;

@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import { ensureIdentity } from './platform/device-identity';
+import { startMsxPlugin } from './platform/msx-plugin';
 import { installRemoteKeys } from './platform/remote-keys';
 import { isTizen } from './platform/runtime';
 import './theme/tokens.css';
@@ -20,6 +21,7 @@ function showStartupError(error: unknown) {
 try {
   if (!rootElement) throw new Error('Elemento #root ausente');
   document.documentElement.classList.toggle('is-tizen', isTizen());
+  startMsxPlugin();
   installRemoteKeys();
   ensureIdentity();
   createRoot(rootElement).render(<App />);

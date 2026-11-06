@@ -1,5 +1,14 @@
 {
   "rewrites": [
-    { "source": "/msx/:route", "destination": "/api/msx/:route" }
+    { "source": "/msx/app", "destination": "/index.html" },
+    { "source": "/msx/app/", "destination": "/index.html" },
+    { "source": "/msx/app/:path*", "destination": "/:path*" },
+    { "source": "/msx/start.json", "destination": "/api/msx/start.json" },
+    { "source": "/msx/launch.json", "destination": "/api/msx/launch.json" },
+    { "source": "/msx/menu", "destination": "/api/msx/menu" },
+    { "source": "/msx/enter", "destination": "/api/msx/enter" },
+    { "source": "/msx/categories", "destination": "/api/msx/categories" },
+    { "source": "/msx/items", "destination": "/api/msx/items" },
+    { "source": "/msx/series", "destination": "/api/msx/series" }
   ]
 }

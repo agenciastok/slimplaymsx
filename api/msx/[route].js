@@ -827,6 +827,7 @@ async function handleMsx(input) {
   const path = input.path.replace(/\/+$/, "") || "/";
   try {
     if (path === "/msx/start.json") return ok(startObject(input.base));
+    if (path === "/msx/launch.json") return ok(launchObject(input.base));
     if (path === "/msx/menu") return ok(await menu(input.base, input.search.get("mac")));
     if (path === "/msx/enter" && input.method === "POST") return ok(await enterCode(input.base, input.body));
     if (path === "/msx/categories") return ok(await categories(input.base, input.search));
@@ -841,11 +842,33 @@ function startObject(base) {
   return {
     name: "SLIM PLAY",
     version: AppConfig.version,
-    parameter: `menu:${base}/msx/menu`,
+    parameter: "content:{PREFIX}{SERVER}/msx/launch.json",
     launcher: {
-      icon: "play-circle-outline",
-      color: "msx-red"
+      image: `${base}/msx/icon.png`,
+      color: "#0F0F12"
     }
+  };
+}
+function launchObject(base) {
+  const app = `${base}/msx/app/?v=${AppConfig.version}`;
+  return {
+    type: "pages",
+    headline: "SLIM PLAY",
+    ready: { action: `video:plugin:${app}` },
+    pages: [
+      {
+        items: [
+          {
+            layout: "0,0,12,6",
+            color: "#0F0F12",
+            image: `${base}/msx/icon.png`,
+            imageFiller: "center",
+            titleFooter: `SLIM PLAY ${AppConfig.version}`,
+            action: `video:plugin:${app}`
+          }
+        ]
+      }
+    ]
   };
 }
 async function menu(base, rawMac) {

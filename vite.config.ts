@@ -4,6 +4,8 @@ import react from '@vitejs/plugin-react';
 import { defineConfig, type Plugin } from 'vite';
 import { msxPlugin } from './msx-plugin';
 
+const hostedOnVercel = process.env.VERCEL === '1';
+
 function copyTizenPackage(): Plugin {
   return {
     name: 'copy-tizen-package',
@@ -18,9 +20,26 @@ function copyTizenPackage(): Plugin {
   };
 }
 
+function msxAppShell(): Plugin {
+  return {
+    name: 'msx-app-shell',
+    apply: 'build',
+    transformIndexHtml(html) {
+      if (!hostedOnVercel) return html;
+      return html.replace(
+        '<div id="root"></div>',
+        '<div id="root"></div>\n    <script src="https://msx.benzac.de/js/tvx-plugin.min.js"></script>',
+      );
+    },
+  };
+}
+
 export default defineConfig({
-  base: './',
-  plugins: [react(), msxPlugin(), copyTizenPackage()],
+  base: hostedOnVercel ? '/msx/app/' : './',
+  define: {
+    'import.meta.env.VITE_MSX': JSON.stringify(hostedOnVercel ? 'true' : 'false'),
+  },
+  plugins: [react(), msxPlugin(), msxAppShell(), copyTizenPackage()],
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
