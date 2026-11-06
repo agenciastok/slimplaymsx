@@ -1,5 +1,4 @@
 node_modules/
 dist/
-api/msx/[[]route].js
 *.wgt
 .DS_Store
