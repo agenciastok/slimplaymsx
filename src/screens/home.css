@@ -1,0 +1,100 @@
+.home {
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 1.125rem 1.75rem 1rem;
+}
+
+.home-stage {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-logo {
+  height: 18.6rem;
+  width: auto;
+  object-fit: contain;
+}
+
+.home-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.625rem;
+  margin-bottom: 7.5rem;
+}
+
+.home-tiles {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.home-tile,
+.home-reload {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--sp-surface);
+  border: 0;
+  border-radius: 0.75rem;
+}
+
+.home-tile {
+  width: 11rem;
+  height: 11rem;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.home-tile svg {
+  width: 3.74rem;
+  height: 3.74rem;
+}
+
+.home-tile span {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.home-reload {
+  gap: 0.5rem;
+  padding: 0.75rem 1.375rem;
+}
+
+.home-reload svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.home-reload span {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.home-meta {
+  position: absolute;
+  left: 1.75rem;
+  right: 1.75rem;
+  bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  pointer-events: none;
+}
+
+.home-meta p {
+  margin: 0;
+  color: var(--sp-muted);
+  font-size: 1.4rem;
+  line-height: 1.45;
+}
+
+.home-meta div:last-child {
+  text-align: right;
+}

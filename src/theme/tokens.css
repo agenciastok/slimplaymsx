@@ -1,0 +1,94 @@
+:root {
+  --sp-bg: #0f0f12;
+  --sp-bg-alt: #16161a;
+  --sp-surface: #1e2026;
+  --sp-surface-high: #2a2e36;
+  --sp-accent: #e50914;
+  --sp-accent-deep: #8b0000;
+  --sp-text: #ffffff;
+  --sp-muted: #a0a5b1;
+  --sp-line: rgba(255, 255, 255, 0.2);
+  font-size: calc(100vw / 120);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root,
+.app-frame,
+.screen-host {
+  height: 100%;
+  overflow: hidden;
+}
+
+* {
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+html {
+  background: var(--sp-bg);
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  background: var(--sp-bg);
+  color: var(--sp-text);
+  font-family: Roboto, "SamsungOne", "Samsung Sans", sans-serif;
+  user-select: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.slim-bg {
+  background-color: var(--sp-bg);
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('../assets/slimflix_fundo_vermelho.jpg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.is-tizen,
+.is-tizen * {
+  cursor: none !important;
+}
+
+[data-tv-focusable='true'] {
+  box-shadow: inset 0 0 0 1px var(--sp-line);
+}
+
+[data-tv-focusable='true']:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px #fff;
+}
+
+.startup-error {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  text-align: center;
+  white-space: pre-wrap;
+  background: var(--sp-bg);
+  color: var(--sp-text);
+}

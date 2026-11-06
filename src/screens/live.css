@@ -1,0 +1,334 @@
+.live-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.live-columns {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 30.47rem minmax(0, 3.6fr) minmax(0, 2.2fr);
+}
+
+.live-column {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--sp-line);
+}
+
+.live-column:first-child {
+  border-left: 0;
+}
+
+.live-column h2 {
+  margin: 0;
+  padding: 1.4rem 1.875rem 0.47rem;
+  font-size: 1.64rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.live-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.94rem;
+  padding: 1.4rem;
+}
+
+.live-tile,
+.live-channel,
+.live-search input {
+  background: var(--sp-surface);
+  border-radius: 1.4rem;
+}
+
+.live-tile,
+.live-channel {
+  padding: 1.17rem 1.4rem;
+  text-align: left;
+  font-size: 1.64rem;
+  font-weight: 400;
+  line-height: 1.25;
+  border-radius: 1.4rem;
+}
+
+.live-tile {
+  min-height: 4.7rem;
+}
+
+.live-channel {
+  min-height: 5.16rem;
+  padding: 1.4rem;
+}
+
+.live-tile.is-selected,
+.live-channel.is-selected {
+  background: var(--sp-surface-high);
+}
+
+.live-channel-row {
+  display: flex;
+  align-items: center;
+  gap: 0.94rem;
+}
+
+.live-channel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.live-star {
+  width: 4.7rem;
+  height: 4.7rem;
+  display: grid;
+  place-items: center;
+  color: var(--sp-muted);
+  flex: none;
+  border-radius: 1.64rem;
+}
+
+.live-star.is-on {
+  color: var(--sp-accent);
+}
+
+.live-star svg,
+.live-search svg,
+.live-minimize svg {
+  width: 2.8rem;
+  height: 2.8rem;
+}
+
+.live-search {
+  display: flex;
+  gap: 0.94rem;
+  padding: 1.4rem 1.4rem 0;
+}
+
+.live-search input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--sp-line);
+  color: var(--sp-text);
+  padding: 1.17rem 1.4rem;
+  font-size: 1.64rem;
+}
+
+.live-search button {
+  width: 4.7rem;
+  display: grid;
+  place-items: center;
+  background: var(--sp-surface);
+  border-radius: 1.4rem;
+}
+
+.live-empty {
+  margin: auto;
+  padding: 1.875rem;
+  color: var(--sp-muted);
+  text-align: center;
+  font-size: 1.64rem;
+}
+
+.live-preview-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  margin: 1.4rem 1.875rem 0.94rem;
+  border-radius: 1.875rem;
+  overflow: hidden;
+  background: #000;
+}
+
+html.is-live-preview,
+html.is-live-preview body,
+html.is-live-preview #root,
+html.is-live-preview .app-frame,
+html.is-live-preview .screen-host,
+html.is-live-preview .live-screen,
+html.is-playing .live-screen {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+html.is-live-preview .live-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-color: var(--sp-bg);
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('../assets/slimflix_fundo_vermelho.jpg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  clip-path: var(--live-cut);
+}
+
+html.is-live-preview .live-screen > * {
+  position: relative;
+  z-index: 1;
+}
+
+html.is-live-preview .live-preview-frame,
+html.is-playing .live-preview-frame {
+  background: transparent;
+}
+
+.live-video,
+.live-preview-object {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.live-video {
+  background: #000;
+}
+
+.live-preview-object {
+  background: transparent;
+}
+
+.live-preview-hit {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 1.4rem;
+  background: transparent;
+}
+
+.live-preview-hit svg {
+  width: 2.8rem;
+  height: 2.8rem;
+}
+
+.live-preview-note,
+.live-buffer {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--sp-muted);
+  font-size: 1.64rem;
+}
+
+.live-buffer {
+  z-index: 3;
+  background: #000;
+}
+
+.live-buffer-full {
+  position: fixed;
+  inset: 0;
+  z-index: 8;
+}
+
+.live-guide-scroll {
+  padding: 0 1.875rem 1.4rem;
+  gap: 0.94rem;
+}
+
+.live-guide {
+  margin: 0;
+  font-size: 1.64rem;
+  font-weight: 700;
+}
+
+.live-guide-empty {
+  margin: 0;
+  color: var(--sp-muted);
+  font-size: 1.64rem;
+}
+
+.live-program {
+  margin: 0;
+  padding: 1.17rem;
+  border-radius: 1.17rem;
+  background: var(--sp-surface);
+  font-size: 1.64rem;
+}
+
+.live-program.is-current {
+  background: var(--sp-surface-high);
+}
+
+.live-program strong,
+.live-program span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.live-program span {
+  color: var(--sp-muted);
+  font-size: 1.4rem;
+}
+
+.live-screen.is-full .screen-header,
+.live-screen.is-full .live-columns {
+  visibility: hidden;
+}
+
+.live-screen.is-full .live-video,
+.live-screen.is-full .live-preview-object {
+  position: fixed;
+  inset: 0;
+  z-index: 6;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 0;
+  visibility: visible;
+}
+
+.live-full-chrome {
+  position: fixed;
+  inset: 0;
+  z-index: 7;
+}
+
+.live-full-chrome.is-hidden {
+  visibility: hidden;
+}
+
+.live-full-chrome.is-hidden button {
+  pointer-events: none;
+}
+
+.live-minimize {
+  position: absolute;
+  top: 1.2rem;
+  left: 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  background: rgba(15, 15, 18, 0.8);
+  font-weight: 700;
+}
+
+.live-full-title {
+  position: absolute;
+  left: 1.4rem;
+  bottom: 1.4rem;
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  text-shadow: 0 0 0.5rem #000;
+}

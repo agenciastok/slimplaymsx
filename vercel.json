@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/msx/:route", "destination": "/api/msx/:route" }
+  ]
+}
