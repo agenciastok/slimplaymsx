@@ -6,6 +6,7 @@ import { listScope } from '../models/playlist';
 import { flattenEpisodes } from '../models/series';
 import { useNav } from '../nav/navigation';
 import { AvPlayEngine } from '../player/avplay-engine';
+import { handoffMsxPlayback } from '../platform/msx-plugin';
 import { Html5Engine } from '../player/html5-engine';
 import type { PlaybackEngine, PlaybackHandlers } from '../player/types';
 import { isAvPlayAvailable } from '../platform/runtime';
@@ -197,6 +198,12 @@ export function PlayerScreen({
     if (!url) {
       window.clearTimeout(holdTimer);
       holdingRef.current = false;
+      return;
+    }
+    if (!avPlay && handoffMsxPlayback(url)) {
+      window.clearTimeout(holdTimer);
+      holdingRef.current = false;
+      setBuffering(false);
       return;
     }
     const engine = avPlay

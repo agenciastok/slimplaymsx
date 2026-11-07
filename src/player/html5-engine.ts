@@ -1,3 +1,4 @@
+import { handoffMsxPlayback } from '../platform/msx-plugin';
 import type { HandlerRef, PlaybackEngine } from './types';
 
 /** Browser stand-in for AVPlay. MPEG-TS and HLS.js stay out of the Samsung package. */
@@ -8,6 +9,7 @@ export class Html5Engine implements PlaybackEngine {
   private mpegts: { unload(): void; detachMediaElement(): void; destroy(): void } | null = null;
   private positionMs = 0;
   private durationMs = 0;
+  private sourceUrl = '';
 
   constructor(
     private readonly video: HTMLVideoElement,
@@ -33,6 +35,7 @@ export class Html5Engine implements PlaybackEngine {
   }
 
   async open(url: string): Promise<void> {
+    this.sourceUrl = url;
     if (browserEngines && this.live && /\.ts($|\?)/i.test(url)) {
       const { attachTransportStream } = await import('./html5-mpegts');
       await attachTransportStream(this.video, url, {
@@ -60,7 +63,7 @@ export class Html5Engine implements PlaybackEngine {
         return;
       }
       const player = new Hls({
-        enableWorker: true,
+        enableWorker: import.meta.env.VITE_MSX !== 'true',
         lowLatencyMode: false,
         liveSyncDurationCount: 3,
         liveMaxLatencyDurationCount: 8,
@@ -200,6 +203,8 @@ export class Html5Engine implements PlaybackEngine {
   }
 
   private emitError(message: string): void {
-    if (!this.disposed) this.handlers.current.onError(message);
+    if (this.disposed) return;
+    if (this.sourceUrl && handoffMsxPlayback(this.sourceUrl, true)) return;
+    this.handlers.current.onError(message);
   }
 }

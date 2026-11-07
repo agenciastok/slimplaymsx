@@ -8,6 +8,7 @@ import { CategoryIds, type CategoryFolder, type MediaEntry } from '../models/med
 import { listScope } from '../models/playlist';
 import { useNav } from '../nav/navigation';
 import { AvPlayEngine } from '../player/avplay-engine';
+import { handoffMsxPlayback } from '../platform/msx-plugin';
 import { Html5Engine } from '../player/html5-engine';
 import type { PlaybackEngine, PlaybackHandlers } from '../player/types';
 import { isAvPlayAvailable, isTizen } from '../platform/runtime';
@@ -227,6 +228,10 @@ export function LiveScreen({ fixture }: { fixture?: MediaEntry[] }) {
   useEffect(() => {
     const url = current?.mediaUrl;
     if (!url) return;
+    if (!avPlay && handoffMsxPlayback(url)) {
+      setBuffering(false);
+      return;
+    }
     const engine = avPlay
       ? surfaceRef.current
         ? new AvPlayEngine(surfaceRef.current, handlers, true)

@@ -4,7 +4,11 @@ interface MsxVideoPlugin {
   stopLoading?: () => void;
   startPlayback?: () => void;
   hidePlayer?: () => void;
+  requestData?: (id: string, callback: (data: { info?: { platform?: string } } | null) => void) => void;
+  executeAction?: (action: string, data?: object) => void;
 }
+
+let msxPlatform = '';
 
 interface MsxPluginTools {
   onReady(callback: () => void): void;
@@ -20,6 +24,9 @@ export function startMsxPlugin(): void {
     plugin.setupPlayer(player(plugin));
     plugin.init();
     holdFocus(plugin);
+    plugin.requestData?.('info', (data) => {
+      msxPlatform = String(data?.info?.platform ?? '');
+    });
   });
 }
 
@@ -70,6 +77,30 @@ function holdFocus(plugin: MsxVideoPlugin): void {
       plugin.hidePlayer?.();
     }, 50);
   });
+}
+
+export function handoffMsxPlayback(url: string, force = false): boolean {
+  if (!document.documentElement.classList.contains('is-msx')) return false;
+  const mixed = location.protocol === 'https:' && /^http:/i.test(url);
+  if (!webOsTv() && !(force && mixed)) return false;
+  const plugin = (window as Window & { TVXVideoPlugin?: MsxVideoPlugin }).TVXVideoPlugin;
+  if (!plugin?.executeAction) return false;
+  const engine = /\.m3u8($|\?)/i.test(url) ? 'hls' : 'html5';
+  const back = `video:plugin:${location.href.split('#')[0]}`;
+  plugin.executeAction(`video:plugin:http://msx.benzac.de/plugins/${engine}.html?url=${encodeURIComponent(url)}`, {
+    properties: {
+      'trigger:back': back,
+      'trigger:complete': back,
+    },
+  });
+  return true;
+}
+
+function webOsTv(): boolean {
+  return (
+    /Web0S|webOS|NetCast|WebAppManager|LG Browser/i.test(navigator.userAgent) ||
+    /lg|netcast|webos/i.test(msxPlatform)
+  );
 }
 
 function focusWindow(): void {
