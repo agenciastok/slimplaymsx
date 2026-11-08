@@ -25,7 +25,7 @@ export function installRemoteKeys(): void {
   if (installed) return;
   installed = true;
   registerMediaKeys();
-  window.addEventListener('keydown', onKeyDown);
+  window.addEventListener('keydown', onKeyDown, true);
 }
 
 function registerMediaKeys(): void {
@@ -44,6 +44,7 @@ function registerMediaKeys(): void {
 function onKeyDown(event: KeyboardEvent): void {
   if (isBack(event)) {
     event.preventDefault();
+    event.stopPropagation();
     document.dispatchEvent(new CustomEvent('slimplay:back', { bubbles: true, cancelable: true }));
     return;
   }

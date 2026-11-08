@@ -4,6 +4,7 @@ interface MsxVideoPlugin {
   stopLoading?: () => void;
   startPlayback?: () => void;
   hidePlayer?: () => void;
+  setupTrigger?: (key: string, action: string) => void;
   requestFullscreen?: (element?: Element) => boolean;
   requestData?: (id: string, callback: (data: { info?: { platform?: string } } | null) => void) => void;
   executeAction?: (action: string, data?: object) => void;
@@ -39,6 +40,7 @@ function player(plugin: MsxVideoPlugin) {
     ready() {
       plugin.stopLoading?.();
       plugin.hidePlayer?.();
+      plugin.setupTrigger?.('back', '[]');
       fillScreen();
       window.setTimeout(() => plugin.hidePlayer?.(), 400);
       focusWindow();
@@ -104,25 +106,17 @@ export function handoffMsxPlayback(url: string, force = false): boolean {
   if (!plugin?.executeAction) return false;
   externalPlayback = true;
   rememberMsxReturn();
-  // Back closes the TV player and reveals this same page. Reloading the plugin
-  // sent the user to the home screen with the Media Station X page left on top.
   const action = native
-    ? withReturn(`video:${url}`)
-    : withReturn(
-        `video:plugin:http://msx.benzac.de/plugins/${/\.m3u8($|\?)/i.test(url) ? 'hls' : 'html5'}.html?url=${encodeURIComponent(url)}`,
-      );
+    ? `video:${url}`
+    : `video:plugin:http://msx.benzac.de/plugins/${/\.m3u8($|\?)/i.test(url) ? 'hls' : 'html5'}.html?url=${encodeURIComponent(url)}`;
+  const appReturn = `video:plugin:${location.href.split('#')[0]}`;
   plugin.executeAction(action, {
     properties: {
-      'trigger:back': 'back',
-      'trigger:complete': 'back',
+      'trigger:back': appReturn,
+      'trigger:complete': appReturn,
     },
   });
   return true;
-}
-
-function withReturn(action: string): string {
-  if (action.indexOf('|trigger:back:') >= 0) return action;
-  return `${action}|trigger:back:back|trigger:complete:back`;
 }
 
 export function legacyMsxBrowser(): boolean {
@@ -157,7 +151,7 @@ export function takeMsxReturn(): 'live' | 'movies' | 'series' | 'lists' | 'setti
     sessionStorage.removeItem(returnKey);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as { route?: string; at?: number };
-    if (!parsed.route || !parsed.at || Date.now() - parsed.at > 20000) return null;
+    if (!parsed.route || !parsed.at || Date.now() - parsed.at > 45000) return null;
     if (
       parsed.route === 'live' ||
       parsed.route === 'movies' ||
