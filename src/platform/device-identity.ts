@@ -39,8 +39,24 @@ export function ensureIdentity(store = new LocalStore()): DeviceIdentity {
 
 function fallbackMac(): string {
   for (let attempt = 0; attempt < 8; attempt += 1) {
-    const formatted = formatAsMacAddress(crypto.randomUUID());
+    const formatted = formatAsMacAddress(randomId());
     if (formatted) return formatted;
   }
   return 'AA:BB:CC:DD:EE:01';
+}
+
+function randomId(): string {
+  const cryptoApi = window.crypto;
+  if (cryptoApi && typeof cryptoApi.randomUUID === 'function') return cryptoApi.randomUUID();
+  const bytes = new Uint8Array(16);
+  if (cryptoApi && typeof cryptoApi.getRandomValues === 'function') cryptoApi.getRandomValues(bytes);
+  else {
+    for (let index = 0; index < bytes.length; index += 1) bytes[index] = Math.floor(Math.random() * 256);
+  }
+  let hex = '';
+  for (let index = 0; index < bytes.length; index += 1) {
+    const value = bytes[index].toString(16);
+    hex += value.length === 1 ? `0${value}` : value;
+  }
+  return hex;
 }
