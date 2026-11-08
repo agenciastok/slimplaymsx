@@ -583,6 +583,38 @@
   -webkit-line-clamp: 1;
 }
 
+html.is-legacy-tv .catalog-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  align-items: flex-start;
+}
+
+html.is-legacy-tv .catalog-grid > .poster {
+  flex: 0 0 23%;
+  width: 23%;
+  height: 26rem;
+  margin: 0 1% 1.2rem;
+}
+
+html.is-legacy-tv .catalog-grid > .catalog-status {
+  flex: 0 0 100%;
+  width: 100%;
+  height: auto;
+}
+
+html.is-legacy-tv .poster-card {
+  height: 100%;
+}
+
+html.is-legacy-tv .poster img,
+html.is-legacy-tv .poster-fallback {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 18rem;
+  min-height: 18rem;
+}
+
 .channel {
   min-height: 3rem;
   padding: 0 0.9rem;

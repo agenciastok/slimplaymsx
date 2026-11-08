@@ -341,6 +341,23 @@ html.is-legacy-tv .live-preview-frame {
   height: 18rem;
 }
 
+html.is-legacy-tv .live-scroll > .live-tile,
+html.is-legacy-tv .live-scroll > .live-channel-row,
+html.is-legacy-tv .live-scroll > .live-empty {
+  flex: 0 0 auto;
+  margin-bottom: 0.94rem;
+}
+
+html.is-legacy-tv .live-channel {
+  height: 5.16rem;
+}
+
+html.is-legacy-tv .live-star {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 html.is-legacy-tv .live-screen.is-full .live-video,
 html.is-legacy-tv .live-buffer,
 html.is-legacy-tv .live-buffer-full,
