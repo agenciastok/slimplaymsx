@@ -870,7 +870,7 @@ function startObject(base) {
   };
 }
 function launchObject(base) {
-  const app = `${base}/msx/app/?v=1.0.8`;
+  const app = `${base}/msx/app/?v=1.0.9`;
   return {
     type: "pages",
     headline: "SLIM PLAY",

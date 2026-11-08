@@ -8,6 +8,21 @@ html.is-playing .player-screen {
   background-image: none !important;
 }
 
+html.is-msx.is-playing,
+html.is-msx.is-playing body,
+html.is-msx.is-playing #root,
+html.is-msx.is-playing .app-frame,
+html.is-msx.is-playing .screen-host,
+html.is-msx.is-playing .player-screen {
+  background-color: #0f0f12 !important;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('../assets/slimflix_fundo_vermelho.jpg') !important;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
 .player-screen {
   position: relative;
   height: 100%;

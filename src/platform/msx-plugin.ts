@@ -21,6 +21,7 @@ export function startMsxPlugin(): void {
   const plugin = root.TVXVideoPlugin;
   if (!tools || !plugin) return;
   document.documentElement.classList.add('is-msx');
+  if (webOsTv() || legacyMsxBrowser()) document.documentElement.classList.add('is-legacy-tv');
   tools.onReady(() => {
     plugin.setupPlayer(player(plugin));
     plugin.init();
@@ -87,18 +88,28 @@ function holdFocus(plugin: MsxVideoPlugin): void {
 export function handoffMsxPlayback(url: string, force = false): boolean {
   if (!document.documentElement.classList.contains('is-msx')) return false;
   const mixed = location.protocol === 'https:' && /^http:/i.test(url);
-  if (!webOsTv() && !(force && mixed)) return false;
+  const native = webOsTv() || legacyMsxBrowser();
+  if (!native && !(force && mixed)) return false;
   const plugin = (window as Window & { TVXVideoPlugin?: MsxVideoPlugin }).TVXVideoPlugin;
   if (!plugin?.executeAction) return false;
-  const engine = /\.m3u8($|\?)/i.test(url) ? 'hls' : 'html5';
   const back = `video:plugin:${location.href.split('#')[0]}`;
-  plugin.executeAction(`video:plugin:http://msx.benzac.de/plugins/${engine}.html?url=${encodeURIComponent(url)}`, {
+  // The LG browser cannot play MPEG-TS inside the page, and an HTTP stream is blocked there.
+  // The TV player can play it; Back returns to SlimPlay.
+  const action = native
+    ? `video:${url}`
+    : `video:plugin:http://msx.benzac.de/plugins/${/\.m3u8($|\?)/i.test(url) ? 'hls' : 'html5'}.html?url=${encodeURIComponent(url)}`;
+  plugin.executeAction(action, {
     properties: {
       'trigger:back': back,
       'trigger:complete': back,
     },
   });
   return true;
+}
+
+export function legacyMsxBrowser(): boolean {
+  const match = /Chrome\/(\d+)/.exec(navigator.userAgent);
+  return match != null && Number(match[1]) < 64;
 }
 
 function webOsTv(): boolean {

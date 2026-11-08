@@ -302,6 +302,57 @@ html.is-playing .live-preview-frame {
   z-index: 7;
 }
 
+html.is-msx.is-live-preview,
+html.is-msx.is-live-preview body,
+html.is-msx.is-live-preview #root,
+html.is-msx.is-live-preview .app-frame,
+html.is-msx.is-live-preview .screen-host,
+html.is-msx.is-live-preview .live-screen,
+html.is-msx.is-playing .live-screen {
+  background-color: #0f0f12 !important;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('../assets/slimflix_fundo_vermelho.jpg') !important;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+html.is-msx.is-live-preview .live-preview-frame,
+html.is-msx.is-playing .live-preview-frame {
+  background: #000;
+}
+
+html.is-legacy-tv .live-columns {
+  display: flex;
+}
+
+html.is-legacy-tv .live-column {
+  flex: 1 1 0;
+  width: 0;
+}
+
+html.is-legacy-tv .live-column:first-child {
+  flex: 0 0 30.47rem;
+  width: 30.47rem;
+}
+
+html.is-legacy-tv .live-preview-frame {
+  height: 18rem;
+}
+
+html.is-legacy-tv .live-screen.is-full .live-video,
+html.is-legacy-tv .live-buffer,
+html.is-legacy-tv .live-buffer-full,
+html.is-legacy-tv .live-preview-hit,
+html.is-legacy-tv .live-preview-note,
+html.is-legacy-tv .live-full-chrome {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
 .live-full-chrome.is-hidden {
   visibility: hidden;
 }
