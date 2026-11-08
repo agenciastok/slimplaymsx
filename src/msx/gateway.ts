@@ -78,7 +78,7 @@ function startObject(base: string) {
 }
 
 function launchObject(base: string) {
-  const app = `${base}/msx/app/?v=1.0.7`;
+  const app = `${base}/msx/app/?v=1.0.8`;
   return {
     type: 'pages',
     headline: 'SLIM PLAY',

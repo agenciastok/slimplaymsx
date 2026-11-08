@@ -1,4 +1,5 @@
 import { AppConfig } from '../core/config';
+import { timeoutSignal } from '../core/timeout-signal';
 import { factsFromPayload, licenseFromPayload, type AppLicense, type DeviceAccessFacts } from '../core/license';
 import { jMap, jString, type JsonMap } from '../core/json';
 import { matchesDeviceMac } from '../core/mac-address';
@@ -115,6 +116,7 @@ function usableCredentials(credentials: PlaylistCredentials, mac: string): boole
 async function postJson(store: LocalStore, path: string, body: JsonMap): Promise<JsonMap> {
   let response: Response;
   try {
+    const signal = timeoutSignal(20000);
     response = await fetch(`${panelBase(store)}${path}`, {
       method: 'POST',
       headers: {
@@ -123,7 +125,7 @@ async function postJson(store: LocalStore, path: string, body: JsonMap): Promise
       },
       body: JSON.stringify(body),
       cache: 'no-store',
-      signal: AbortSignal.timeout(20000),
+      ...(signal ? { signal } : {}),
     });
   } catch (error) {
     if (error instanceof ApiException) throw error;

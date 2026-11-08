@@ -359,6 +359,16 @@ function jMapSafe(value) {
   return null;
 }
 
+// src/core/timeout-signal.ts
+function timeoutSignal(ms) {
+  if (typeof AbortSignal === "undefined") return void 0;
+  if (typeof AbortSignal.timeout === "function") return AbortSignal.timeout(ms);
+  if (typeof AbortController === "undefined") return void 0;
+  const controller = new AbortController();
+  window.setTimeout(() => controller.abort(), ms);
+  return controller.signal;
+}
+
 // src/core/text.ts
 var accents = {
   \u00E1: "a",
@@ -485,10 +495,11 @@ function parseM3uCatalog(text) {
 async function fetchCatalog(url) {
   let response;
   try {
+    const signal = timeoutSignal(9e4);
     response = await fetch(url, {
       headers: { Accept: "*/*" },
       cache: "no-store",
-      signal: AbortSignal.timeout(9e4)
+      ...signal ? { signal } : {}
     });
   } catch (error) {
     if (isAbort(error)) throw error;
@@ -693,10 +704,11 @@ async function getJson(credentials, query, signal) {
   for (const [key, value] of Object.entries(query)) url.searchParams.set(key, value);
   let response;
   try {
+    const limit = signal ?? timeoutSignal(25e3);
     response = await fetch(url, {
       headers: { Accept: "application/json" },
       cache: "no-store",
-      signal: signal ?? AbortSignal.timeout(25e3)
+      ...limit ? { signal: limit } : {}
     });
   } catch (error) {
     if (isAbort2(error)) throw error;
@@ -858,7 +870,7 @@ function startObject(base) {
   };
 }
 function launchObject(base) {
-  const app = `${base}/msx/app/?v=1.0.7`;
+  const app = `${base}/msx/app/?v=1.0.8`;
   return {
     type: "pages",
     headline: "SLIM PLAY",

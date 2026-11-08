@@ -69,8 +69,12 @@ function msxChromium53Boot(): Plugin {
         const entry = /id="vite-legacy-entry"[^>]*data-src="([^"]+)"/.exec(html);
         if (!polyfill || !entry) return html;
         const boot =
-          '<style>html,body,#root{position:fixed;top:0;left:0;width:100%;height:100%;margin:0;background:#0f0f12;color:#fff;}</style>';
+          '<style>html,body,#root{margin:0;width:100%;height:100%;background:#0f0f12;color:#fff;overflow:hidden;}</style>';
         return html
+          .replace(
+            'name="viewport" content="width=1920, height=1080"',
+            'name="viewport" content="width=device-width, initial-scale=1"',
+          )
           .replace(/<script nomodule\b/g, '<script type="text/plain"')
           .replace('<div id="root"></div>', '<div id="root" style="font-size:48px;padding:48px;">SLIM PLAY</div>')
           .replace('</body>', `${boot}</body>`);

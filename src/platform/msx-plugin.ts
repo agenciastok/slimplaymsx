@@ -4,6 +4,7 @@ interface MsxVideoPlugin {
   stopLoading?: () => void;
   startPlayback?: () => void;
   hidePlayer?: () => void;
+  requestFullscreen?: (element?: Element) => boolean;
   requestData?: (id: string, callback: (data: { info?: { platform?: string } } | null) => void) => void;
   executeAction?: (action: string, data?: object) => void;
 }
@@ -37,7 +38,11 @@ function player(plugin: MsxVideoPlugin) {
       plugin.stopLoading?.();
       plugin.startPlayback?.();
       plugin.hidePlayer?.();
-      window.setTimeout(() => plugin.hidePlayer?.(), 700);
+      fillScreen(plugin);
+      window.setTimeout(() => {
+        plugin.hidePlayer?.();
+        fillScreen(plugin);
+      }, 700);
       focusWindow();
     },
     play() {},
@@ -101,6 +106,18 @@ function webOsTv(): boolean {
     /Web0S|webOS|NetCast|WebAppManager|LG Browser/i.test(navigator.userAgent) ||
     /lg|netcast|webos/i.test(msxPlatform)
   );
+}
+
+function fillScreen(plugin: MsxVideoPlugin): void {
+  try {
+    plugin.requestFullscreen?.(document.documentElement);
+  } catch {
+    // Older webOS builds keep the plugin in the video frame when fullscreen is refused.
+  }
+  const root = document.documentElement;
+  root.style.margin = '0';
+  root.style.width = '100%';
+  root.style.height = '100%';
 }
 
 function focusWindow(): void {

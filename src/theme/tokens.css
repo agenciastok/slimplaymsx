@@ -58,7 +58,9 @@ button {
   padding: 0;
 }
 
-.slim-bg {
+.slim-bg,
+html.is-msx,
+html.is-msx body {
   background-color: var(--sp-bg);
   background-image:
     linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),

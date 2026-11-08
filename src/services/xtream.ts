@@ -1,4 +1,5 @@
 import { AppConfig } from '../core/config';
+import { timeoutSignal } from '../core/timeout-signal';
 import { jInt, jString, type JsonMap } from '../core/json';
 import { parseDuration, parseEpgTime, parseExpiry } from '../core/format';
 import { decodeMaybeBase64 } from '../core/text';
@@ -288,10 +289,11 @@ async function getJson(
   for (const [key, value] of Object.entries(query)) url.searchParams.set(key, value);
   let response: Response;
   try {
+    const limit = signal ?? timeoutSignal(25000);
     response = await fetch(url, {
       headers: { Accept: 'application/json' },
       cache: 'no-store',
-      signal: signal ?? AbortSignal.timeout(25000),
+      ...(limit ? { signal: limit } : {}),
     });
   } catch (error) {
     if (isAbort(error)) throw error;

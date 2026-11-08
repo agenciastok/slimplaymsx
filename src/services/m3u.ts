@@ -1,3 +1,4 @@
+import { timeoutSignal } from '../core/timeout-signal';
 import { slug } from '../core/text';
 import type { CategoryFolder, MediaEntry, MediaKind } from '../models/media';
 import { directM3uUrl, type PlaylistCredentials } from '../models/playlist';
@@ -97,10 +98,11 @@ export function parseM3uCatalog(text: string): DirectCatalog {
 async function fetchCatalog(url: string): Promise<DirectCatalog> {
   let response: Response;
   try {
+    const signal = timeoutSignal(90000);
     response = await fetch(url, {
       headers: { Accept: '*/*' },
       cache: 'no-store',
-      signal: AbortSignal.timeout(90000),
+      ...(signal ? { signal } : {}),
     });
   } catch (error) {
     if (isAbort(error)) throw error;
