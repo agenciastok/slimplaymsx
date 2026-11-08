@@ -15,14 +15,13 @@ var AppConfig = {
 
 // src/core/device-key.ts
 function deviceKeyFromId(id) {
-  let hash = 0x811c9dc5n;
-  const prime = 0x01000193n;
-  const mask = 0x7fffffffn;
+  let hash = 2166136261;
   for (let index = 0; index < id.length; index += 1) {
-    hash ^= BigInt(id.charCodeAt(index));
-    hash = hash * prime & mask;
+    hash = Math.imul(hash ^ id.charCodeAt(index), 16777619) >>> 0;
+    hash &= 2147483647;
   }
-  return (hash % 1000000n).toString().padStart(6, "0");
+  const text = String(hash % 1e6);
+  return text.length >= 6 ? text : `000000${text}`.slice(-6);
 }
 
 // src/core/json.ts
@@ -859,7 +858,7 @@ function startObject(base) {
   };
 }
 function launchObject(base) {
-  const app = `${base}/msx/app/?v=1.0.6`;
+  const app = `${base}/msx/app/?v=1.0.7`;
   return {
     type: "pages",
     headline: "SLIM PLAY",

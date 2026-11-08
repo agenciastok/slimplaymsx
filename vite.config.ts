@@ -1,4 +1,4 @@
-import { copyFileSync, existsSync } from 'node:fs';
+import { copyFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import legacy from '@vitejs/plugin-legacy';
 import react from '@vitejs/plugin-react';
@@ -38,6 +38,29 @@ function msxChromium53Boot(): Plugin {
     name: 'msx-chromium53-boot',
     apply: 'build',
     enforce: 'post',
+    closeBundle() {
+      if (!hostedOnVercel) return;
+      const htmlPath = resolve('dist/index.html');
+      const html = readFileSync(htmlPath, 'utf8');
+      const polyfill = /id="vite-legacy-polyfill"[^>]*src="([^"]+)"/.exec(html);
+      const entry = /id="vite-legacy-entry"[^>]*data-src="([^"]+)"/.exec(html);
+      if (!polyfill || !entry) throw new Error('Pacote legado ausente no HTML');
+      const source = (url: string) =>
+        readFileSync(resolve('dist', url.replace(/^\/msx\/app\//, '')), 'utf8').replace(
+          /<\/script/gi,
+          () => '<\\/script',
+        );
+      const checker =
+        '<script>(function(){var root=document.getElementById("root");if(!root)return;var text=(root.textContent||"").replace(/^\\s+|\\s+$/g,"");if(text!=="SLIM PLAY")return;var line=document.createElement("div");line.style.cssText="font-size:28px;padding:24px;white-space:pre-wrap;";line.textContent=window.__slimplayBoot?"O pacote carregou, mas a tela nao abriu.":"O pacote antigo nao executou.";root.appendChild(line);})();</script>';
+      writeFileSync(
+        htmlPath,
+        html.replace(
+          '</body>',
+          () =>
+            `<script>${source(polyfill[1])}</script><script>${source(entry[1])}</script>${checker}</body>`,
+        ),
+      );
+    },
     transformIndexHtml: {
       order: 'post',
       handler(html) {
@@ -45,14 +68,8 @@ function msxChromium53Boot(): Plugin {
         const polyfill = /id="vite-legacy-polyfill"[^>]*src="([^"]+)"/.exec(html);
         const entry = /id="vite-legacy-entry"[^>]*data-src="([^"]+)"/.exec(html);
         if (!polyfill || !entry) return html;
-        const written =
-          `<script src="${polyfill[1]}"><\/script>` +
-          `<script src="${entry[1]}"><\/script>` +
-          '<script>(function(){var root=document.getElementById("root");if(!root)return;var text=(root.textContent||"").replace(/^\\s+|\\s+$/g,"");if(text!=="SLIM PLAY")return;var line=document.createElement("div");line.style.cssText="font-size:32px;padding:24px;";line.textContent=window.__slimplayBoot?"O pacote carregou, mas a tela nao abriu.":"O pacote antigo nao executou.";root.appendChild(line);})();<\/script>';
-        const boot = [
-          '<style>html,body,#root{position:fixed;top:0;left:0;width:100%;height:100%;margin:0;background:#0f0f12;color:#fff;}</style>',
-          `<script>${webOsPolyfill}document.write(${JSON.stringify(written).replace(/</g, '\\u003c')});</script>`,
-        ].join('');
+        const boot =
+          '<style>html,body,#root{position:fixed;top:0;left:0;width:100%;height:100%;margin:0;background:#0f0f12;color:#fff;}</style>';
         return html
           .replace(/<script nomodule\b/g, '<script type="text/plain"')
           .replace('<div id="root"></div>', '<div id="root" style="font-size:48px;padding:48px;">SLIM PLAY</div>')
