@@ -33,6 +33,34 @@ const webOsPolyfill = [
   '})();',
 ].join('');
 
+function msxChromium53Boot(): Plugin {
+  return {
+    name: 'msx-chromium53-boot',
+    apply: 'build',
+    enforce: 'post',
+    transformIndexHtml: {
+      order: 'post',
+      handler(html) {
+        if (!hostedOnVercel) return html;
+        const polyfill = /id="vite-legacy-polyfill"[^>]*src="([^"]+)"/.exec(html);
+        const entry = /id="vite-legacy-entry"[^>]*data-src="([^"]+)"/.exec(html);
+        if (!polyfill || !entry) return html;
+        const boot = [
+          '<style>html,body,#root{position:fixed;top:0;left:0;width:100%;height:100%;margin:0;background:#0f0f12;color:#fff;}</style>',
+          `<script>${webOsPolyfill}`,
+          '(function(){var probe=document.createElement("script");if("noModule" in probe)return;',
+          'function add(src){var script=document.createElement("script");script.src=src;script.async=false;document.body.appendChild(script);}',
+          `add(${JSON.stringify(polyfill[1])});add(${JSON.stringify(entry[1])});})();</script>`,
+        ].join('');
+        return html
+          .replace(/<script nomodule\b/g, '<script type="text/plain"')
+          .replace('<div id="root"></div>', '<div id="root" style="font-size:48px;padding:48px;">SLIM PLAY</div>')
+          .replace('</body>', `${boot}</body>`);
+      },
+    },
+  };
+}
+
 function msxAppShell(): Plugin {
   return {
     name: 'msx-app-shell',
@@ -67,6 +95,7 @@ export default defineConfig({
             modernPolyfills: true,
             additionalLegacyPolyfills: ['whatwg-fetch'],
           }),
+          msxChromium53Boot(),
         ]
       : []),
   ],

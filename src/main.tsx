@@ -13,9 +13,9 @@ function showStartupError(error: unknown) {
   const message = error instanceof Error ? error.message : String(error);
   while (rootElement.firstChild) rootElement.removeChild(rootElement.firstChild);
   const panel = document.createElement('div');
-  panel.className = 'startup-error';
+  panel.style.cssText = 'font-size:32px;padding:48px;white-space:pre-wrap;';
   panel.textContent = `Falha ao iniciar\n${message}`;
-  rootElement.append(panel);
+  rootElement.appendChild(panel);
 }
 
 try {
