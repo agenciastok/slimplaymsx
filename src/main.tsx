@@ -11,7 +11,7 @@ const rootElement = document.getElementById('root');
 function showStartupError(error: unknown) {
   if (!rootElement) return;
   const message = error instanceof Error ? error.message : String(error);
-  rootElement.replaceChildren();
+  while (rootElement.firstChild) rootElement.removeChild(rootElement.firstChild);
   const panel = document.createElement('div');
   panel.className = 'startup-error';
   panel.textContent = `Falha ao iniciar\n${message}`;

@@ -97,6 +97,7 @@ function send(response: NodeResponse, status: number, body: unknown): Response |
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Accept',
+    'Cache-Control': 'no-store',
     'Content-Type': 'application/json; charset=utf-8',
   };
   if (response && typeof response.setHeader === 'function' && typeof response.end === 'function') {

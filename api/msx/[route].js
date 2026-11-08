@@ -850,7 +850,7 @@ function startObject(base) {
   };
 }
 function launchObject(base) {
-  const app = `${base}/msx/app/?v=1.0.2`;
+  const app = `${base}/msx/app/?v=1.0.3`;
   return {
     type: "pages",
     headline: "SLIM PLAY",
@@ -1216,6 +1216,7 @@ function send(response, status, body) {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Accept",
+    "Cache-Control": "no-store",
     "Content-Type": "application/json; charset=utf-8"
   };
   if (response && typeof response.setHeader === "function" && typeof response.end === "function") {
