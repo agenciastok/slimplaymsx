@@ -24,7 +24,7 @@
     },
     {
       "label": "Teste D - API",
-      "action": "content:https://www.slimplay.site/msx/diag/api"
+      "action": "content:https://www.slimplay.site/msx/diag-api"
     }
   ]
 }

@@ -20,7 +20,7 @@
       }
       line('2. script classico executou');
       var xhr = new XMLHttpRequest();
-      xhr.open('GET', '/msx/diag/ping', true);
+      xhr.open('GET', '/msx/diag-ping', true);
       xhr.onreadystatechange = function () {
         if (xhr.readyState !== 4) return;
         line('4. teste D status ' + xhr.status);

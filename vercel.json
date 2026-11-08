@@ -10,8 +10,8 @@
     { "source": "/msx/categories", "destination": "/api/msx/categories" },
     { "source": "/msx/items", "destination": "/api/msx/items" },
     { "source": "/msx/series", "destination": "/api/msx/series" },
-    { "source": "/msx/diag/ping", "destination": "/api/msx/diag-ping" },
-    { "source": "/msx/diag/api", "destination": "/api/msx/diag-api" }
+    { "source": "/msx/diag-ping", "destination": "/api/msx/diag-ping" },
+    { "source": "/msx/diag-api", "destination": "/api/msx/diag-api" }
   ],
   "headers": [
     {
