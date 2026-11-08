@@ -9,6 +9,17 @@
     { "source": "/msx/enter", "destination": "/api/msx/enter" },
     { "source": "/msx/categories", "destination": "/api/msx/categories" },
     { "source": "/msx/items", "destination": "/api/msx/items" },
-    { "source": "/msx/series", "destination": "/api/msx/series" }
+    { "source": "/msx/series", "destination": "/api/msx/series" },
+    { "source": "/msx/diag/ping", "destination": "/api/msx/diag-ping" },
+    { "source": "/msx/diag/api", "destination": "/api/msx/diag-api" }
+  ],
+  "headers": [
+    {
+      "source": "/msx/diag/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    }
   ]
 }

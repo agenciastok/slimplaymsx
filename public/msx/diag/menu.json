@@ -1,0 +1,30 @@
+{
+  "type": "list",
+  "headline": "SLIM PLAY - LG OK",
+  "template": {
+    "type": "control",
+    "layout": "0,0,12,1"
+  },
+  "items": [
+    {
+      "label": "SLIM PLAY - LG OK",
+      "extensionLabel": "Teste A"
+    },
+    {
+      "label": "Teste B - segundo JSON",
+      "action": "content:https://www.slimplay.site/msx/diag/step-b.json"
+    },
+    {
+      "label": "Teste C - pagina HTML",
+      "action": "video:plugin:https://www.slimplay.site/msx/diag/page.html"
+    },
+    {
+      "label": "Teste C por http",
+      "action": "video:plugin:http://slimplay.site/msx/diag/page.html"
+    },
+    {
+      "label": "Teste D - API",
+      "action": "content:https://www.slimplay.site/msx/diag/api"
+    }
+  ]
+}

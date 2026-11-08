@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>SLIM PLAY DIAG</title>
+    <style>
+      html, body { margin: 0; background: #0b6b2a; color: #ffffff; }
+      body { font-family: sans-serif; font-size: 36px; padding: 48px; }
+      h1 { font-size: 64px; margin: 0 0 24px; }
+      #log { white-space: pre-wrap; font-size: 32px; line-height: 1.4; }
+    </style>
+  </head>
+  <body>
+    <h1>SLIM PLAY - HTML OK</h1>
+    <div id="log">1. HTML carregou</div>
+    <script>
+      var log = document.getElementById('log');
+      function line(text) {
+        log.appendChild(document.createTextNode('\n' + text));
+      }
+      line('2. script classico executou');
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', '/msx/diag/ping', true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState !== 4) return;
+        line('4. teste D status ' + xhr.status);
+        if (xhr.status === 200 && xhr.responseText.indexOf('"ok":true') !== -1) line('5. API OK');
+        else line('5. API falhou');
+      };
+      xhr.onerror = function () { line('4. teste D erro de rede'); };
+      line('3. pedindo a API');
+      xhr.send();
+    </script>
+  </body>
+</html>

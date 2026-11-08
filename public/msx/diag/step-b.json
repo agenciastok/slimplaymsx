@@ -1,0 +1,18 @@
+{
+  "type": "list",
+  "headline": "TESTE B OK",
+  "template": {
+    "type": "control",
+    "layout": "0,0,12,1"
+  },
+  "items": [
+    {
+      "label": "Segundo JSON carregou",
+      "extensionLabel": "Teste B"
+    },
+    {
+      "label": "Voltar ao menu",
+      "action": "content:https://www.slimplay.site/msx/diag/menu.json"
+    }
+  ]
+}

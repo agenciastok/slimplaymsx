@@ -50,6 +50,15 @@ export async function handleMsx(input: {
     if (path === '/msx/categories') return ok(await categories(input.base, input.search));
     if (path === '/msx/items') return ok(await items(input.base, input.search));
     if (path === '/msx/series') return ok(await series(input.search));
+    if (path === '/msx/diag-ping') return ok({ ok: true, test: 'D', stage: 'api' });
+    if (path === '/msx/diag-api') {
+      return ok({
+        type: 'list',
+        headline: 'TESTE D OK',
+        template: { type: 'control', layout: '0,0,12,1' },
+        items: [{ label: 'A API respondeu sem dados do aparelho' }],
+      });
+    }
     return { status: 404, body: { error: 'Endereço não encontrado' } };
   } catch (error) {
     return ok(messagePage(msxFailure(error)));
