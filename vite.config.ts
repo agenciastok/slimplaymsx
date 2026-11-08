@@ -45,12 +45,13 @@ function msxChromium53Boot(): Plugin {
         const polyfill = /id="vite-legacy-polyfill"[^>]*src="([^"]+)"/.exec(html);
         const entry = /id="vite-legacy-entry"[^>]*data-src="([^"]+)"/.exec(html);
         if (!polyfill || !entry) return html;
+        const written =
+          `<script src="${polyfill[1]}"><\/script>` +
+          `<script src="${entry[1]}"><\/script>` +
+          '<script>(function(){var root=document.getElementById("root");if(!root)return;var text=(root.textContent||"").replace(/^\\s+|\\s+$/g,"");if(text!=="SLIM PLAY")return;var line=document.createElement("div");line.style.cssText="font-size:32px;padding:24px;";line.textContent=window.__slimplayBoot?"O pacote carregou, mas a tela nao abriu.":"O pacote antigo nao executou.";root.appendChild(line);})();<\/script>';
         const boot = [
           '<style>html,body,#root{position:fixed;top:0;left:0;width:100%;height:100%;margin:0;background:#0f0f12;color:#fff;}</style>',
-          `<script>${webOsPolyfill}`,
-          '(function(){var probe=document.createElement("script");if("noModule" in probe)return;',
-          'function add(src){var script=document.createElement("script");script.src=src;script.async=false;document.body.appendChild(script);}',
-          `add(${JSON.stringify(polyfill[1])});add(${JSON.stringify(entry[1])});})();</script>`,
+          `<script>${webOsPolyfill}document.write(${JSON.stringify(written).replace(/</g, '\\u003c')});</script>`,
         ].join('');
         return html
           .replace(/<script nomodule\b/g, '<script type="text/plain"')

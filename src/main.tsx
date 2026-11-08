@@ -7,6 +7,7 @@ import { isTizen } from './platform/runtime';
 import './theme/tokens.css';
 
 const rootElement = document.getElementById('root');
+const page = window as Window & { __slimplayBoot?: boolean };
 
 function showStartupError(error: unknown) {
   if (!rootElement) return;
@@ -18,13 +19,16 @@ function showStartupError(error: unknown) {
   rootElement.appendChild(panel);
 }
 
-try {
-  if (!rootElement) throw new Error('Elemento #root ausente');
-  document.documentElement.classList.toggle('is-tizen', isTizen());
-  startMsxPlugin();
-  installRemoteKeys();
-  ensureIdentity();
-  createRoot(rootElement).render(<App />);
-} catch (error) {
-  showStartupError(error);
+if (!page.__slimplayBoot) {
+  page.__slimplayBoot = true;
+  try {
+    if (!rootElement) throw new Error('Elemento #root ausente');
+    document.documentElement.classList.toggle('is-tizen', isTizen());
+    startMsxPlugin();
+    installRemoteKeys();
+    ensureIdentity();
+    createRoot(rootElement).render(<App />);
+  } catch (error) {
+    showStartupError(error);
+  }
 }
