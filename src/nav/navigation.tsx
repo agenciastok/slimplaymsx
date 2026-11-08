@@ -14,6 +14,7 @@ import { sampleSeriesDetail } from '../dev/series-fixture';
 import { LiveScreen } from '../screens/LiveScreen';
 import type { MediaEntry } from '../models/media';
 import type { SeriesDetail } from '../models/series';
+import { takeMsxReturn } from '../platform/msx-plugin';
 import { useSession } from '../state/session';
 
 export type RouteName = 'home' | 'activation' | 'lists' | 'live' | 'movies' | 'series' | 'settings' | 'player';
@@ -64,6 +65,12 @@ export function Navigation() {
   useEffect(() => {
     if (!session.ready) return;
     const base: AppRoute[] = session.blockedMac ? [{ name: 'activation' }] : [{ name: 'home' }];
+    const returned = session.blockedMac ? null : takeMsxReturn();
+    if (returned) {
+      setStack([...base, { name: returned }]);
+      setDialog(null);
+      return;
+    }
     const params = import.meta.env.DEV ? new URLSearchParams(location.search) : null;
     const serie = params?.get('serie');
     const filme = params?.get('filme');

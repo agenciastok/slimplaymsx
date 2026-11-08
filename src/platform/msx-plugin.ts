@@ -10,6 +10,7 @@ interface MsxVideoPlugin {
 }
 
 let msxPlatform = '';
+let externalPlayback = false;
 
 interface MsxPluginTools {
   onReady(callback: () => void): void;
@@ -37,13 +38,9 @@ function player(plugin: MsxVideoPlugin) {
     init() {},
     ready() {
       plugin.stopLoading?.();
-      plugin.startPlayback?.();
       plugin.hidePlayer?.();
-      fillScreen(plugin);
-      window.setTimeout(() => {
-        plugin.hidePlayer?.();
-        fillScreen(plugin);
-      }, 700);
+      fillScreen();
+      window.setTimeout(() => plugin.hidePlayer?.(), 400);
       focusWindow();
     },
     play() {},
@@ -76,12 +73,25 @@ function player(plugin: MsxVideoPlugin) {
 
 function holdFocus(plugin: MsxVideoPlugin): void {
   focusWindow();
-  window.setInterval(focusWindow, 1000);
+  window.setInterval(() => {
+    if (!externalPlayback) focusWindow();
+  }, 1000);
+  let blurred = false;
+  const settle = () => {
+    if (externalPlayback) return;
+    focusWindow();
+    plugin.hidePlayer?.();
+    fillScreen();
+  };
+  window.addEventListener('focus', () => {
+    if (!blurred) return;
+    blurred = false;
+    externalPlayback = false;
+    settle();
+  });
   window.addEventListener('blur', () => {
-    window.setTimeout(() => {
-      focusWindow();
-      plugin.hidePlayer?.();
-    }, 50);
+    blurred = true;
+    window.setTimeout(settle, 50);
   });
 }
 
@@ -92,19 +102,27 @@ export function handoffMsxPlayback(url: string, force = false): boolean {
   if (!native && !(force && mixed)) return false;
   const plugin = (window as Window & { TVXVideoPlugin?: MsxVideoPlugin }).TVXVideoPlugin;
   if (!plugin?.executeAction) return false;
-  const back = `video:plugin:${location.href.split('#')[0]}`;
-  // The LG browser cannot play MPEG-TS inside the page, and an HTTP stream is blocked there.
-  // The TV player can play it; Back returns to SlimPlay.
+  externalPlayback = true;
+  rememberMsxReturn();
+  // Back closes the TV player and reveals this same page. Reloading the plugin
+  // sent the user to the home screen with the Media Station X page left on top.
   const action = native
-    ? `video:${url}`
-    : `video:plugin:http://msx.benzac.de/plugins/${/\.m3u8($|\?)/i.test(url) ? 'hls' : 'html5'}.html?url=${encodeURIComponent(url)}`;
+    ? withReturn(`video:${url}`)
+    : withReturn(
+        `video:plugin:http://msx.benzac.de/plugins/${/\.m3u8($|\?)/i.test(url) ? 'hls' : 'html5'}.html?url=${encodeURIComponent(url)}`,
+      );
   plugin.executeAction(action, {
     properties: {
-      'trigger:back': back,
-      'trigger:complete': back,
+      'trigger:back': 'back',
+      'trigger:complete': 'back',
     },
   });
   return true;
+}
+
+function withReturn(action: string): string {
+  if (action.indexOf('|trigger:back:') >= 0) return action;
+  return `${action}|trigger:back:back|trigger:complete:back`;
 }
 
 export function legacyMsxBrowser(): boolean {
@@ -119,12 +137,43 @@ function webOsTv(): boolean {
   );
 }
 
-function fillScreen(plugin: MsxVideoPlugin): void {
-  try {
-    plugin.requestFullscreen?.(document.documentElement);
-  } catch {
-    // Older webOS builds keep the plugin in the video frame when fullscreen is refused.
+const returnKey = 'slimplay-msx-return';
+
+function rememberMsxReturn(): void {
+  const route = document.documentElement.dataset.msxReturn ?? '';
+  if (route !== 'live' && route !== 'movies' && route !== 'series' && route !== 'lists' && route !== 'settings') {
+    return;
   }
+  try {
+    sessionStorage.setItem(returnKey, JSON.stringify({ route, at: Date.now() }));
+  } catch {
+    // The TV browser can block storage. Back still closes the player.
+  }
+}
+
+export function takeMsxReturn(): 'live' | 'movies' | 'series' | 'lists' | 'settings' | null {
+  try {
+    const raw = sessionStorage.getItem(returnKey);
+    sessionStorage.removeItem(returnKey);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { route?: string; at?: number };
+    if (!parsed.route || !parsed.at || Date.now() - parsed.at > 20000) return null;
+    if (
+      parsed.route === 'live' ||
+      parsed.route === 'movies' ||
+      parsed.route === 'series' ||
+      parsed.route === 'lists' ||
+      parsed.route === 'settings'
+    ) {
+      return parsed.route;
+    }
+  } catch {
+    // Ignore a stored value this browser cannot read.
+  }
+  return null;
+}
+
+function fillScreen(): void {
   const root = document.documentElement;
   root.style.margin = '0';
   root.style.width = '100%';

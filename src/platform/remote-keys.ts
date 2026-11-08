@@ -104,6 +104,7 @@ function isEnter(event: KeyboardEvent): boolean {
 
 function isBack(event: KeyboardEvent): boolean {
   return (
+    event.keyCode === 461 ||
     event.keyCode === 10009 ||
     event.key === 'Escape' ||
     event.key === 'Back' ||

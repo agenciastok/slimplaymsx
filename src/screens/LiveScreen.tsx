@@ -187,6 +187,13 @@ export function LiveScreen({ fixture }: { fixture?: MediaEntry[] }) {
   }, [credentials, current, fixture]);
 
   useEffect(() => {
+    document.documentElement.dataset.msxReturn = 'live';
+    return () => {
+      delete document.documentElement.dataset.msxReturn;
+    };
+  }, []);
+
+  useEffect(() => {
     const root = document.documentElement;
     if (!current) {
       root.classList.remove('is-playing', 'is-live-preview');

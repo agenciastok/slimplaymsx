@@ -78,10 +78,11 @@ function startObject(base: string) {
 }
 
 function launchObject(base: string) {
-  const app = `${base}/msx/app/?v=1.0.10`;
+  const app = `${base}/msx/app/?v=1.0.11`;
   return {
     type: 'pages',
     headline: 'SLIM PLAY',
+    background: `${base}/msx/backdrop.jpg`,
     ready: { action: `video:plugin:${app}` },
     pages: [
       {

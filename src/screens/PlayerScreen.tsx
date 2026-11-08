@@ -117,8 +117,14 @@ export function PlayerScreen({
 
   useEffect(() => {
     document.documentElement.classList.add('is-playing');
-    return () => document.documentElement.classList.remove('is-playing');
-  }, []);
+    const kind = entry.kind;
+    document.documentElement.dataset.msxReturn =
+      kind === 'series' || kind === 'episode' ? 'series' : kind === 'live' ? 'live' : 'movies';
+    return () => {
+      document.documentElement.classList.remove('is-playing');
+      delete document.documentElement.dataset.msxReturn;
+    };
+  }, [entry.kind]);
 
   useEffect(() => {
     if ((queue && queue.length > 0) || !autoNext || !entry.seriesId) return;
