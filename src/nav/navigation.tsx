@@ -14,7 +14,7 @@ import { sampleSeriesDetail } from '../dev/series-fixture';
 import { LiveScreen } from '../screens/LiveScreen';
 import type { MediaEntry } from '../models/media';
 import type { SeriesDetail } from '../models/series';
-import { takeMsxReturn } from '../platform/msx-plugin';
+import { exitStandalone, takeMsxReturn } from '../platform/msx-plugin';
 import { useSession } from '../state/session';
 
 export type RouteName = 'home' | 'activation' | 'lists' | 'live' | 'movies' | 'series' | 'settings' | 'player';
@@ -107,17 +107,36 @@ export function Navigation() {
     }
   }, [session.ready, session.blockedMac]);
 
+  const toastRef = useRef(session.showToast);
+  toastRef.current = session.showToast;
+
   useEffect(() => {
+    const leave = () => {
+      if (document.documentElement.classList.contains('is-standalone')) exitStandalone();
+    };
     const onBack = (event: Event) => {
       if (event.defaultPrevented) return;
       if (dialogRef.current) {
         setDialog(null);
         return;
       }
-      setStack((routes) => (routes.length > 1 ? routes.slice(0, -1) : routes));
+      setStack((routes) => {
+        if (routes.length > 1) return routes.slice(0, -1);
+        window.setTimeout(leave, 0);
+        return routes;
+      });
+    };
+    const onStuck = () => {
+      toastRef.current('Voltar não fechou o Slim Play. Saia pelo menu do aparelho.');
     };
     window.addEventListener('slimplay:back', onBack);
-    return () => window.removeEventListener('slimplay:back', onBack);
+    window.addEventListener('slimplay:exit', leave);
+    window.addEventListener('slimplay:exit-stuck', onStuck);
+    return () => {
+      window.removeEventListener('slimplay:back', onBack);
+      window.removeEventListener('slimplay:exit', leave);
+      window.removeEventListener('slimplay:exit-stuck', onStuck);
+    };
   }, []);
 
   useEffect(() => {

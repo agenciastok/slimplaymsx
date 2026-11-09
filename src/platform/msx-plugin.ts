@@ -17,7 +17,17 @@ interface MsxPluginTools {
   onReady(callback: () => void): void;
 }
 
+export function isStandalonePage(): boolean {
+  return /\/msx\/standalone(?:\/|$)/.test(location.pathname);
+}
+
 export function startMsxPlugin(): void {
+  if (isStandalonePage()) {
+    const root = document.documentElement;
+    root.classList.add('is-standalone');
+    if (webOsTv() || legacyMsxBrowser()) root.classList.add('is-legacy-tv');
+    return;
+  }
   const root = window as Window & { TVXPluginTools?: MsxPluginTools; TVXVideoPlugin?: MsxVideoPlugin };
   const tools = root.TVXPluginTools;
   const plugin = root.TVXVideoPlugin;
@@ -97,7 +107,28 @@ function holdFocus(plugin: MsxVideoPlugin): void {
   });
 }
 
+export function exitStandalone(): void {
+  const stamp = location.href;
+  try {
+    history.back();
+  } catch {
+    // This document was opened without a previous page.
+  }
+  window.setTimeout(() => {
+    if (location.href !== stamp) return;
+    try {
+      window.close();
+    } catch {
+      // webOS keeps a link page open when the window cannot close itself.
+    }
+    if (location.href === stamp) {
+      window.dispatchEvent(new CustomEvent('slimplay:exit-stuck'));
+    }
+  }, 400);
+}
+
 export function handoffMsxPlayback(url: string, force = false): boolean {
+  if (document.documentElement.classList.contains('is-standalone')) return false;
   if (!document.documentElement.classList.contains('is-msx')) return false;
   const mixed = location.protocol === 'https:' && /^http:/i.test(url);
   const native = webOsTv() || legacyMsxBrowser();

@@ -205,6 +205,11 @@ export class Html5Engine implements PlaybackEngine {
   private emitError(message: string): void {
     if (this.disposed) return;
     if (this.sourceUrl && handoffMsxPlayback(this.sourceUrl, true)) return;
-    this.handlers.current.onError(message);
+    const page = document.documentElement;
+    const mixed =
+      page.classList.contains('is-standalone') &&
+      location.protocol === 'https:' &&
+      /^http:/i.test(this.sourceUrl);
+    this.handlers.current.onError(mixed ? 'A transmissão HTTP não abre nesta página segura.' : message);
   }
 }

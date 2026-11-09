@@ -33,8 +33,24 @@ export function moveFocus(direction: FocusDirection): void {
     if (target) placeFocus(target);
     return;
   }
+  if (row === 'reload' && direction === 'right') {
+    const exit = findRow(nodes, 'exit');
+    if (exit) placeFocus(exit);
+    return;
+  }
+  if (row === 'exit' && direction === 'left') {
+    const reload = findRow(nodes, 'reload');
+    if (reload) placeFocus(reload);
+    return;
+  }
+  if (row === 'exit' && direction === 'up') {
+    const target = findRowIndex(nodes, 'menu', returnIndex) ?? findRow(nodes, 'menu');
+    if (target) placeFocus(target);
+    return;
+  }
   if (row === 'menu' && direction === 'up') return;
   if (row === 'reload' && direction !== 'up') return;
+  if (row === 'exit') return;
 
   const target = nearest(current, nodes, direction);
   if (target) placeFocus(target);

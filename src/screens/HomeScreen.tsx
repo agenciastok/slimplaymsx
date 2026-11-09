@@ -3,6 +3,7 @@ import { AppConfig } from '../core/config';
 import { useTr } from '../l10n/use-tr';
 import { playlistLoaded } from '../models/playlist';
 import { useNav, type RouteName } from '../nav/navigation';
+import { exitStandalone } from '../platform/msx-plugin';
 import { useSession } from '../state/session';
 import { Icon } from './icons';
 import './home.css';
@@ -25,6 +26,7 @@ export function HomeScreen() {
   const nav = useNav();
   const text = useTr();
   const [reloading, setReloading] = useState(false);
+  const standalone = document.documentElement.classList.contains('is-standalone');
 
   function open(index: number) {
     const item = menu[index];
@@ -73,17 +75,30 @@ export function HomeScreen() {
             </button>
           ))}
         </div>
-        <button
-          type="button"
-          className="home-reload"
-          data-tv-focusable="true"
-          data-tv-row="reload"
-          disabled={reloading}
-          onClick={() => void reload()}
-        >
-          <Icon name="reload" />
-          <span>{text('Recarregar')}</span>
-        </button>
+        <div className="home-actions">
+          <button
+            type="button"
+            className="home-reload"
+            data-tv-focusable="true"
+            data-tv-row="reload"
+            disabled={reloading}
+            onClick={() => void reload()}
+          >
+            <Icon name="reload" />
+            <span>{text('Recarregar')}</span>
+          </button>
+          {standalone ? (
+            <button
+              type="button"
+              className="home-reload"
+              data-tv-focusable="true"
+              data-tv-row="exit"
+              onClick={() => exitStandalone()}
+            >
+              <span>{text('Sair')}</span>
+            </button>
+          ) : null}
+        </div>
       </div>
       <footer className="home-meta">
         <div>

@@ -60,7 +60,9 @@ button {
 
 .slim-bg,
 html.is-msx,
-html.is-msx body {
+html.is-msx body,
+html.is-standalone,
+html.is-standalone body {
   background-color: var(--sp-bg);
   background-image:
     linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),

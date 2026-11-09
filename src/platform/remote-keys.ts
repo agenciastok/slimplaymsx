@@ -42,6 +42,13 @@ function registerMediaKeys(): void {
 }
 
 function onKeyDown(event: KeyboardEvent): void {
+  if (isExit(event)) {
+    event.preventDefault();
+    event.stopPropagation();
+    window.dispatchEvent(new CustomEvent('slimplay:exit'));
+    return;
+  }
+
   if (isBack(event)) {
     event.preventDefault();
     event.stopPropagation();
@@ -101,6 +108,10 @@ function arrowDirection(event: KeyboardEvent): FocusDirection | null {
 
 function isEnter(event: KeyboardEvent): boolean {
   return event.key === 'Enter' || event.keyCode === 13;
+}
+
+function isExit(event: KeyboardEvent): boolean {
+  return event.keyCode === 1001 || event.key === 'Exit' || event.key === 'XF86Exit';
 }
 
 function isBack(event: KeyboardEvent): boolean {

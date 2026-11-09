@@ -308,7 +308,14 @@ html.is-msx.is-live-preview #root,
 html.is-msx.is-live-preview .app-frame,
 html.is-msx.is-live-preview .screen-host,
 html.is-msx.is-live-preview .live-screen,
-html.is-msx.is-playing .live-screen {
+html.is-msx.is-playing .live-screen,
+html.is-standalone.is-live-preview,
+html.is-standalone.is-live-preview body,
+html.is-standalone.is-live-preview #root,
+html.is-standalone.is-live-preview .app-frame,
+html.is-standalone.is-live-preview .screen-host,
+html.is-standalone.is-live-preview .live-screen,
+html.is-standalone.is-playing .live-screen {
   background-color: #0f0f12 !important;
   background-image:
     linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
@@ -319,7 +326,9 @@ html.is-msx.is-playing .live-screen {
 }
 
 html.is-msx.is-live-preview .live-preview-frame,
-html.is-msx.is-playing .live-preview-frame {
+html.is-msx.is-playing .live-preview-frame,
+html.is-standalone.is-live-preview .live-preview-frame,
+html.is-standalone.is-playing .live-preview-frame {
   background: #000;
 }
 
