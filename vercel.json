@@ -2,8 +2,8 @@
   "rewrites": [
     { "source": "/msx/app", "destination": "/index.html" },
     { "source": "/msx/app/", "destination": "/index.html" },
-    { "source": "/msx/standalone", "destination": "/index.html" },
-    { "source": "/msx/standalone/", "destination": "/index.html" },
+    { "source": "/msx/standalone", "destination": "/standalone.html" },
+    { "source": "/msx/standalone/", "destination": "/standalone.html" },
     { "source": "/msx/app/:path*", "destination": "/:path*" },
     { "source": "/msx/start.json", "destination": "/api/msx/start.json" },
     { "source": "/msx/link.json", "destination": "/api/msx/link.json" },

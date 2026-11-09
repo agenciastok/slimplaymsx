@@ -97,7 +97,7 @@ function linkStartObject(base: string) {
 }
 
 function linkPage(base: string, execute: boolean) {
-  const app = `${base.replace(/^http:\/\//i, 'https://')}/msx/standalone/?v=link1`;
+  const app = `${base.replace(/^http:\/\//i, 'https://')}/msx/standalone/?v=link2`;
   return {
     type: 'list',
     headline: 'SLIM PLAY',

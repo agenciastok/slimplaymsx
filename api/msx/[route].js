@@ -837,8 +837,9 @@ var catalogs = /* @__PURE__ */ new Map();
 async function handleMsx(input) {
   const path = input.path.replace(/\/+$/, "") || "/";
   try {
-    if (path === "/msx/start.json") return ok(startObject(input.base));
+    if (path === "/msx/start.json") return ok(linkEntry(input.base) ? linkStartObject(input.base) : startObject(input.base));
     if (path === "/msx/launch.json") return ok(launchObject(input.base));
+    if (path === "/msx/link.json") return ok(linkPage(input.base, input.search.get("execute") !== "0"));
     if (path === "/msx/menu") return ok(await menu(input.base, input.search.get("mac")));
     if (path === "/msx/enter" && input.method === "POST") return ok(await enterCode(input.base, input.body));
     if (path === "/msx/categories") return ok(await categories(input.base, input.search));
@@ -867,6 +868,43 @@ function startObject(base) {
       image: `${base}/msx/icon.png`,
       color: "#0F0F12"
     }
+  };
+}
+function linkEntry(base) {
+  const marked = globalThis.process?.env?.MSX_START === "link";
+  return marked || /(?:^|\/\/)(?:slimplaylink\.vercel\.app|link\.slimplay\.site)(?::\d+)?(?:\/|$)/i.test(base);
+}
+function linkStartObject(base) {
+  return {
+    name: "SLIM PLAY",
+    version: AppConfig.version,
+    parameter: "content:{PREFIX}{SERVER}/msx/link.json?execute=0",
+    launcher: {
+      image: `${base}/msx/icon.png`,
+      color: "#0F0F12"
+    }
+  };
+}
+function linkPage(base, execute) {
+  const app = `${base.replace(/^http:\/\//i, "https://")}/msx/standalone/?v=link2`;
+  return {
+    type: "list",
+    headline: "SLIM PLAY",
+    background: `${base}/msx/backdrop.jpg`,
+    template: {
+      type: "button",
+      layout: "0,0,12,1",
+      focus: false,
+      execute: false
+    },
+    items: [
+      {
+        label: execute ? "Abrir Slim Play" : "Abrir Slim Play manualmente",
+        focus: true,
+        execute,
+        action: `link:${app}`
+      }
+    ]
   };
 }
 function launchObject(base) {

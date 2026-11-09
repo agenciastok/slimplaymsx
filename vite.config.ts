@@ -55,13 +55,14 @@ function msxChromium53Boot(): Plugin {
         );
       const checker =
         '<script>(function(){var root=document.getElementById("root");if(!root)return;var text=(root.textContent||"").replace(/^\\s+|\\s+$/g,"");if(text!=="SLIM PLAY")return;var line=document.createElement("div");line.style.cssText="font-size:28px;padding:24px;white-space:pre-wrap;";line.textContent=window.__slimplayBoot?"O pacote carregou, mas a tela nao abriu.":"O pacote antigo nao executou.";root.appendChild(line);})();</script>';
+      const page = html.replace(
+        '</body>',
+        () => `<script>${source(polyfill[1])}</script><script>${source(entry[1])}</script>${checker}</body>`,
+      );
+      writeFileSync(htmlPath, page);
       writeFileSync(
-        htmlPath,
-        html.replace(
-          '</body>',
-          () =>
-            `<script>${source(polyfill[1])}</script><script>${source(entry[1])}</script>${checker}</body>`,
-        ),
+        resolve('dist/standalone.html'),
+        page.replace('<script src="https://msx.benzac.de/js/tvx-plugin.min.js"></script>', ''),
       );
     },
     transformIndexHtml: {
